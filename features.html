@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features | AnychainPay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#3498DB',
+                        'brand-hover': '#2980B9',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; 
+        }
+        
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .dark .glass { background: rgba(11, 17, 32, 0.85); }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+        .floating-delayed { animation: float 7s ease-in-out infinite 2s; }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); }
+        .premium-shadow-hover:hover { box-shadow: 0 20px 40px -10px rgba(52, 152, 219, 0.15); }
+        .dark .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3); }
+
+        /* Setup initial theme to prevent flicker */
+        .dark body { background-color: #0B1120; color: #F3F4F6; }
+
+        /* Custom list styling for feature cards */
+        .feature-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .feature-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #3498DB;
+        }
+    </style>
+</head>
+<body class="bg-[#FAFCFF] text-[#121D33] dark:bg-[#0B1120] dark:text-gray-100 transition-colors duration-300">
+
+    <nav id="main-nav" class="glass fixed w-full top-0 z-50 border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
+        <div class="flex justify-between items-center px-6 md:px-12 py-4">
+            <div class="text-2xl font-extrabold tracking-tight z-50 relative dark:text-white">ANYCHAIN<span class="text-brand">PAY</span></div>
+            <div class="hidden md:flex items-center space-x-5">
+                <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand dark:hover:text-brand transition">Log in</a>
+                <a href="#" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-sm font-semibold hover:border-brand hover:text-brand dark:hover:border-brand transition">Sign up</a>
+                
+                <button id="theme-toggle" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+                
+                <button class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">文A</button>
+                <div class="relative">
+                    <button id="desktop-menu-btn" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                   <div id="desktop-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white dark:bg-gray-900 rounded-2xl premium-shadow border border-gray-100 dark:border-gray-800 py-2 opacity-0 transform scale-95 transition-all duration-200 origin-top-right">
+                        <a href="prices.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Prices</a>
+                        <a href="features.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Features</a>
+                        <a href="recurrent.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Recurring</a>
+                        <a href="contact.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Contact Us</a>
+                    </div>
+
+                </div>
+            </div>
+            
+            <button id="mobile-menu-btn" class="md:hidden z-50 relative p-2 text-gray-600 dark:text-gray-300 focus:outline-none bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div id="mobile-menu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 transform -translate-y-full opacity-0 pointer-events-none transition-all duration-300 ease-in-out pt-24 px-6 md:hidden">
+            <div class="flex flex-col space-y-6 text-center">
+                <a href="prices.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Prices</a>
+                <a href="features.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Features</a>
+                <a href="recurrent.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Recurring</a>
+                <a href="contact.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Contact Us</a>
+                <hr class="border-gray-100 dark:border-gray-800">
+                <div class="flex justify-center mb-2">
+                    <button id="mobile-theme-toggle" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 flex items-center justify-center space-x-2">
+                        <span>Switch Theme</span>
+                    </button>
+                </div>
+                <a href="#" class="text-lg font-semibold text-gray-600 dark:text-gray-300">Log in</a>
+                <a href="#" class="bg-brand text-white py-3 rounded-xl text-lg font-bold">Sign up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-32 pb-16 px-6 relative overflow-hidden bg-[#F4F7FA] dark:bg-[#0F172A] transition-colors duration-300">
+        <div class="container mx-auto max-w-6xl flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 z-10 text-center md:text-left mb-12 md:mb-0" data-aos="fade-right">
+                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight dark:text-white">
+                    Features
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400 text-lg mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                    We have the market's most extensive feature set, covering 99.9% of all business types, from accepting direct transfers to mass collections from addresses to reduce fees.
+                </p>
+                <button class="bg-brand bg-brand-hover text-white px-10 py-4 rounded-xl font-bold shadow-[0_8px_20px_rgba(52,152,219,0.3)] hover:-translate-y-1 transition-all">Sign up</button>
+            </div>
+            
+            <div class="md:w-1/2 flex justify-center md:justify-end z-10" data-aos="fade-left">
+                <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden floating">
+                    <div class="flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                        <div class="flex space-x-2"><div class="w-3 h-3 rounded-full bg-red-400"></div><div class="w-3 h-3 rounded-full bg-yellow-400"></div><div class="w-3 h-3 rounded-full bg-green-400"></div></div>
+                        <span class="ml-4 text-xs font-semibold text-gray-500">Orders</span>
+                    </div>
+                    <div class="p-6 flex space-x-6">
+                        <div class="flex-1 space-y-4">
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                            <div class="h-8 bg-gray-100 dark:bg-gray-900 rounded w-full"></div>
+                            <div class="h-8 bg-gray-100 dark:bg-gray-900 rounded w-full"></div>
+                            <div class="h-8 bg-gray-100 dark:bg-gray-900 rounded w-full"></div>
+                        </div>
+                        <div class="w-32 h-32 bg-gray-100 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                            <div class="grid grid-cols-4 gap-1 w-20 h-20 opacity-40">
+                                <div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-transparent"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div>
+                                <div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-transparent"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div>
+                                <div class="bg-transparent"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-transparent"></div>
+                                <div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div><div class="bg-gray-800 dark:bg-gray-400 rounded-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 dark:text-white" data-aos="fade-up">Accepting Payments</h2>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Invoice System</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Set Prices in Both Fiat and Cryptocurrency.</li>
+                    <li>The Most Current Exchange Rates from Fiat to Cryptocurrency.</li>
+                    <li>Unlimited Invoice Lifespan.</li>
+                    <li>Full Page Customization Support. Set Your Logo and Brand Colors.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-64 h-[420px] bg-white dark:bg-gray-800 border-8 border-gray-900 dark:border-gray-700 rounded-[2.5rem] shadow-xl relative overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-5 bg-gray-900 dark:bg-gray-700 rounded-b-xl z-20"></div>
+                    <div class="p-4 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex justify-between items-center mt-4">
+                        <span class="font-bold text-xs dark:text-white">AnychainPay</span>
+                    </div>
+                    <div class="p-5"><p class="text-xs text-gray-400">My company</p><p class="text-3xl font-bold dark:text-white mt-1">312.80 <span class="text-sm text-gray-500">USD</span></p></div>
+                    <div class="px-4 space-y-2">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-xl text-xs flex justify-between"><span>BTC</span><span class="font-bold">0.011</span></div>
+                        <div class="bg-blue-50 dark:bg-gray-800 border border-brand p-3 rounded-xl text-xs flex justify-between"><span>USDT</span><span class="font-bold text-brand">313.44</span></div>
+                    </div>
+                    <div class="absolute bottom-5 left-4 right-4"><button class="w-full bg-brand text-white text-sm py-3 rounded-xl font-bold">Pay with USDT</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Order System</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Unique Address Rotation System for Each Merchant. Customer Payments are Collected on a Minimal Number of Addresses, Reducing Blockchain Fees.</li>
+                    <li>Order Lifetime of up to 24 Hours.</li>
+                    <li>Support for Multi-Transaction Payments with Display of Paid Amount.</li>
+                    <li>Status System Supporting Partial Payments, Overpayments, and More.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-64 h-[420px] bg-white dark:bg-gray-800 border-8 border-gray-900 dark:border-gray-700 rounded-[2.5rem] shadow-xl relative overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-5 bg-gray-900 dark:bg-gray-700 rounded-b-xl z-20"></div>
+                    <div class="p-5 mt-4 text-center">
+                        <p class="text-xs text-gray-400">My company</p>
+                        <p class="text-2xl font-bold dark:text-white mt-1">311.40 <span class="text-sm text-gray-500">USDC</span></p>
+                    </div>
+                    <div class="px-6 flex justify-center mb-4">
+                        <div class="w-32 h-32 bg-gray-100 dark:bg-gray-900 rounded-xl flex items-center justify-center border dark:border-gray-700">
+                            <div class="grid grid-cols-4 gap-1 w-24 h-24 p-2">
+                                <div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-transparent"></div><div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-black dark:bg-white rounded-sm"></div>
+                                <div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-transparent"></div><div class="bg-black dark:bg-white rounded-sm"></div>
+                                <div class="bg-transparent"></div><div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-transparent"></div>
+                                <div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-transparent"></div><div class="bg-black dark:bg-white rounded-sm"></div><div class="bg-black dark:bg-white rounded-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 text-center"><p class="text-[10px] text-gray-400 break-all">0x8C...3B2D</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <div class="flex space-x-2 mb-4">
+                    <span class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">New</span>
+                    <span class="border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Release July 2023</span>
+                </div>
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Static Addresses</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Assign Personal Addresses for Each Coin to Clients, Allowing Clients to Repeatedly Pay to the Same Address.</li>
+                    <li>Error-Free Fund Accounting. Clear Display of Balance for Each Client.</li>
+                    <li>No Limit on the Number of Addresses Attached to a Single Client.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="flex px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                        <div class="flex space-x-2"><div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div><div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div></div>
+                    </div>
+                    <div class="flex h-40">
+                        <div class="w-1/4 border-r border-gray-100 dark:border-gray-700 p-4 space-y-3">
+                            <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                            <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        </div>
+                        <div class="w-3/4 p-4 space-y-4">
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                            <div class="space-y-2">
+                                <div class="h-6 bg-brand/10 dark:bg-brand/20 rounded w-full flex items-center px-2"><div class="w-4 h-2 bg-brand rounded"></div></div>
+                                <div class="h-6 bg-gray-50 dark:bg-gray-700/50 rounded w-full"></div>
+                                <div class="h-6 bg-gray-50 dark:bg-gray-700/50 rounded w-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Multilingual Pages</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Payment pages are adapted to the individual language needs of each client.</li>
+                    <li>Support for displaying 16+ languages.</li>
+                    <li>Ability to add a language for your business needs.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-64 h-[420px] bg-white dark:bg-gray-800 border-8 border-gray-900 dark:border-gray-700 rounded-[2.5rem] shadow-xl relative overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-5 bg-gray-900 dark:bg-gray-700 rounded-b-xl z-20"></div>
+                    <div class="p-4 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex justify-between items-center mt-4">
+                        <span class="font-bold text-xs dark:text-white">Select language</span>
+                    </div>
+                    <div class="p-4 grid grid-cols-2 gap-3">
+                        <div class="flex items-center space-x-2 bg-brand/10 p-2 rounded text-xs dark:text-white font-bold"><span class="text-base">🇬🇧</span><span>English</span></div>
+                        <div class="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs dark:text-white"><span class="text-base">🇪🇸</span><span>Español</span></div>
+                        <div class="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs dark:text-white"><span class="text-base">🇫🇷</span><span>Français</span></div>
+                        <div class="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs dark:text-white"><span class="text-base">🇩🇪</span><span>Deutsch</span></div>
+                        <div class="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs dark:text-white"><span class="text-base">🇮🇹</span><span>Italiano</span></div>
+                        <div class="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs dark:text-white"><span class="text-base">🇯🇵</span><span>日本語</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Autoconvertation</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Protect your funds from volatility by automatically converting them into stable coins.</li>
+                    <li>Forget about managing multiple coins. Receive only preferred coins to your addresses.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating">
+                <div class="relative w-48 h-48">
+                    <div class="absolute top-4 right-4 w-40 h-20 bg-brand rounded-2xl transform rotate-6 shadow-xl flex items-center justify-center">
+                        <span class="text-white text-3xl font-bold">⇌</span>
+                    </div>
+                    <div class="absolute bottom-8 left-4 w-40 h-20 bg-gray-900 dark:bg-gray-800 rounded-2xl transform -rotate-6 shadow-xl flex items-center justify-center px-4 border border-gray-700">
+                        <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center text-white font-bold mr-2">✓</div>
+                        <span class="text-white font-bold">Stable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Fee Payer Selection</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Choose who will pay the transaction fees, you or the client.</li>
+                    <li>Receive exact amounts to your addresses without losing fees from the transaction amount.</li>
+                    <li>Ability to receive payments from clients without any stopper in the form of additional fee payments.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating-delayed">
+                <div class="w-40 h-40 bg-gradient-to-br from-blue-400 to-brand rounded-3xl shadow-2xl transform -rotate-12 flex items-center justify-center border-b-8 border-r-8 border-blue-600">
+                    <span class="text-white text-6xl font-extrabold">%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12 border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 dark:text-white" data-aos="fade-up">Funds Management</h2>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Advance Balance</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Operate with precise amounts. Pay service and blockchain fees from a separate balance, not from the transaction amount.</li>
+                    <li>Forget about storing currency for gas payment in tokens.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
+                        <span class="text-xs font-bold dark:text-white">Dashboard</span>
+                        <div class="w-8 h-8 bg-brand rounded-full"></div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-gray-400">Advance Balance</p>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-white mb-4">234.60 <span class="text-sm">USD</span></p>
+                        <div class="flex gap-4">
+                            <div class="flex-1 h-16 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-100 dark:border-gray-600"></div>
+                            <div class="flex-1 h-16 bg-gray-50 dark:bg-gray-700 rounded-lg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Segregated Payment Storage</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Store funds from clients separately based on the payment method. No mixing of funds for payments through orders, subscriptions, and direct transfers.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating">
+                <div class="w-40 h-40 bg-gray-800 dark:bg-gray-700 rounded-2xl shadow-2xl transform rotate-6 border-b-8 border-r-8 border-gray-900 flex items-center justify-center relative overflow-hidden">
+                    <div class="w-24 h-24 rounded-full border-4 border-gray-600 flex items-center justify-center relative">
+                        <div class="w-4 h-4 bg-gray-500 rounded-full absolute top-2"></div>
+                        <div class="w-12 h-2 bg-gray-600"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12 border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 dark:text-white" data-aos="fade-up">Withdrawal Of Funds</h2>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Address Book</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Add and save addresses for future fund transfers.</li>
+                    <li>Assign unique names for convenient management of saved addresses.</li>
+                    <li>Forget about the problem of errors in addresses or meticulous double-checking of each symbol before making a transaction.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                        <span class="text-xs font-bold dark:text-white">Address Book</span>
+                    </div>
+                    <div class="p-4 space-y-3 opacity-70">
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded"><div class="h-2 bg-gray-300 dark:bg-gray-500 rounded w-1/4"></div><div class="h-2 bg-brand rounded w-1/4"></div></div>
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded"><div class="h-2 bg-gray-300 dark:bg-gray-500 rounded w-1/4"></div><div class="h-2 bg-brand rounded w-1/4"></div></div>
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded"><div class="h-2 bg-gray-300 dark:bg-gray-500 rounded w-1/4"></div><div class="h-2 bg-brand rounded w-1/4"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Fiat Withdrawals</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Receive fiat payouts to your bank account through SEPA.</li>
+                    <li>One of the fastest payouts in the market.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating">
+                <div class="relative w-48 h-48">
+                    <div class="absolute top-6 right-0 w-32 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-end px-6 shadow-lg border border-green-200 dark:border-green-800">
+                        <span class="text-green-600 dark:text-green-400 text-3xl font-bold">$</span>
+                    </div>
+                    <div class="absolute bottom-6 left-0 w-32 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-start px-6 shadow-lg border border-blue-200 dark:border-blue-800 transform rotate-12">
+                        <span class="text-brand text-3xl font-bold">₿</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Automatic Withdrawals</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Forget about the need for manual work. Set the date, amount, and withdrawal currency.</li>
+                    <li>Unlimited number of withdrawals, both in terms of amount and number of recipients.</li>
+                    <li>No minimum withdrawal amount. Limitations are only subject to the blockchain.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating-delayed">
+                <div class="w-40 h-40 bg-gray-100 dark:bg-gray-800 rounded-3xl shadow-xl flex items-center justify-center border-t-4 border-brand relative">
+                    <div class="w-20 h-20 rounded-full border-8 border-brand border-dashed animate-[spin_10s_linear_infinite]"></div>
+                    <div class="absolute -top-8 bg-gray-900 dark:bg-black rounded-full w-16 h-16 flex items-center justify-center shadow-lg border border-gray-700">
+                        <span class="text-white font-bold text-2xl">₿</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12 border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 dark:text-white" data-aos="fade-up">Security</h2>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Real Blockchain Addresses</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>No synthetic addresses; all transactions are transparent and traceable.</li>
+                    <li>All fund movements can be tracked through blockchain scanning.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating">
+                <div class="relative w-48 h-48">
+                    <div class="absolute top-0 left-16 w-16 h-16 bg-brand rounded-lg shadow-xl border-b-4 border-r-4 border-blue-700"></div>
+                    <div class="absolute bottom-8 left-4 w-16 h-16 bg-brand rounded-lg shadow-xl border-b-4 border-r-4 border-blue-700 opacity-80"></div>
+                    <div class="absolute bottom-8 right-4 w-16 h-16 bg-brand rounded-lg shadow-xl border-b-4 border-r-4 border-blue-700 opacity-90"></div>
+                    <div class="absolute top-12 left-12 w-8 h-8 border-t-2 border-l-2 border-dashed border-gray-400 rounded-tl-lg"></div>
+                    <div class="absolute top-12 right-12 w-8 h-8 border-t-2 border-r-2 border-dashed border-gray-400 rounded-tr-lg"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Two-Factor Authentication</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Protect your funds with verification at each stage.</li>
+                    <li>Withdrawals are only possible with 2FA confirmation immediately before withdrawal.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating-delayed">
+                <div class="w-48 bg-gray-900 dark:bg-black rounded-2xl shadow-2xl p-6 transform rotate-6 border border-gray-700">
+                    <div class="bg-gray-800 dark:bg-gray-900 rounded-lg p-2 text-center text-xs text-white font-bold tracking-widest mb-4 border border-gray-600">LOGIN</div>
+                    <div class="bg-brand/20 dark:bg-brand/30 rounded-lg p-3 text-center text-brand font-bold text-lg tracking-[0.5em] border border-brand/50">****</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12 border-t border-gray-100 dark:border-gray-800 mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 dark:text-white" data-aos="fade-up">Integration And Testing</h2>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Webhooks</h3>
+                <ul class="feature-list text-gray-600 dark:text-gray-400">
+                    <li>Unlimited retries for webhooks.</li>
+                    <li>Available for sending with orders and invoices.</li>
+                    <li>Storage of webhook sending history for all time.</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                        <span class="text-xs font-bold dark:text-white">Webhook History</span>
+                    </div>
+                    <div class="p-4 space-y-3 opacity-70">
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded text-[10px] font-mono"><span class="text-gray-400">POST /webhook/url</span><span class="text-green-500">200 OK</span></div>
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded text-[10px] font-mono"><span class="text-gray-400">POST /webhook/url</span><span class="text-green-500">200 OK</span></div>
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded text-[10px] font-mono"><span class="text-gray-400">POST /webhook/url</span><span class="text-red-500">500 ERR</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white dark:bg-[#0B1120] text-gray-500 dark:text-gray-400 py-16 text-sm border-t border-gray-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="container mx-auto px-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-12 pb-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">ANYCHAIN<span class="text-brand">PAY</span></div>
+                <p class="mb-4 max-w-sm leading-relaxed">The professional choice for accepting cryptocurrency payments securely and seamlessly across borders.</p>
+                <p class="text-xs">© 2026 AnychainPay. All Rights Reserved</p>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Company</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Contact us</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Download logo</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Referral Program</a>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Legal & Dev</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">API Documentation</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Privacy policy</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Terms of use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true, offset: 50 });
+
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            lightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
+        } else {
+            darkIcon.classList.remove('hidden');
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        mobileThemeToggleBtn.addEventListener('click', toggleTheme);
+
+        // --- MOBILE MENU LOGIC ---
+        const mainNav = document.getElementById('main-nav');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+        let isMenuOpen = false;
+
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+                
+                mainNav.classList.remove('glass');
+                mainNav.classList.add('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                mobileMenu.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+                
+                mainNav.classList.add('glass');
+                mainNav.classList.remove('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // --- DESKTOP DROPDOWN LOGIC ---
+        const desktopBtn = document.getElementById('desktop-menu-btn');
+        const desktopDropdown = document.getElementById('desktop-dropdown');
+        
+        desktopBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            desktopDropdown.classList.toggle('hidden');
+            setTimeout(() => {
+                desktopDropdown.classList.toggle('opacity-0');
+                desktopDropdown.classList.toggle('scale-95');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!desktopDropdown.classList.contains('hidden') && !desktopBtn.contains(e.target) && !desktopDropdown.contains(e.target)) {
+                desktopDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    desktopDropdown.classList.add('hidden');
+                }, 200);
+            }
+        });
+    </script>
+</body>
+</html>
