@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnychainPay | Premium Crypto Payment Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#3498DB',
+                        'brand-hover': '#2980B9',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; 
+        }
+        
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .dark .glass { background: rgba(11, 17, 32, 0.85); }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+        .floating-delayed { animation: float 7s ease-in-out infinite 2s; }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .marquee-container {
+            display: flex; overflow: hidden; white-space: nowrap; width: 100%;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .marquee-content { display: flex; animation: marquee 30s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); }
+        .premium-shadow-hover:hover { box-shadow: 0 20px 40px -10px rgba(52, 152, 219, 0.15); }
+        .dark .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3); }
+
+        .code-block { background: #0A0F1C; color: #60A5FA; }
+        .code-string { color: #A7F3D0; }
+        .code-key { color: #FCA5A5; }
+
+        /* Setup initial theme before load to prevent flicker */
+        .dark body { background-color: #0B1120; color: #F3F4F6; }
+    </style>
+</head>
+<body class="bg-[#FAFCFF] text-[#121D33] dark:bg-[#0B1120] dark:text-gray-100 transition-colors duration-300">
+
+    <nav id="main-nav" class="glass fixed w-full top-0 z-50 border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
+        <div class="flex justify-between items-center px-6 md:px-12 py-4">
+            <div class="text-2xl font-extrabold tracking-tight z-50 relative dark:text-white">ANYCHAIN<span class="text-brand">PAY</span></div>
+            <div class="hidden md:flex items-center space-x-5">
+                <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand dark:hover:text-brand transition">Log in</a>
+                <a href="#" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-sm font-semibold hover:border-brand hover:text-brand dark:hover:border-brand transition">Sign up</a>
+                
+                <button id="theme-toggle" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+                
+                <button class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">文A</button>
+                <div class="relative">
+                    <button id="desktop-menu-btn" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <div id="desktop-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white dark:bg-gray-900 rounded-2xl premium-shadow border border-gray-100 dark:border-gray-800 py-2 opacity-0 transform scale-95 transition-all duration-200 origin-top-right">
+                        <a href="#" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Prices</a>
+                        <a href="#" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Features</a>
+                        <a href="#" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Recurring</a>
+                        <a href="#" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="mobile-menu-btn" class="md:hidden z-50 relative p-2 text-gray-600 dark:text-gray-300 focus:outline-none bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div id="mobile-menu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 transform -translate-y-full opacity-0 pointer-events-none transition-all duration-300 ease-in-out pt-24 px-6 md:hidden">
+            <div class="flex flex-col space-y-6 text-center">
+                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Prices</a>
+                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Features</a>
+                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Recurring</a>
+                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Contact Us</a>
+                <hr class="border-gray-100 dark:border-gray-800">
+                
+                <div class="flex justify-center mb-2">
+                    <button id="mobile-theme-toggle" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 flex items-center justify-center space-x-2">
+                        <span>Switch Theme</span>
+                    </button>
+                </div>
+
+                <a href="#" class="text-lg font-semibold text-gray-600 dark:text-gray-300">Log in</a>
+                <a href="#" class="bg-brand text-white py-3 rounded-xl text-lg font-bold">Sign up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative pt-32 pb-20 px-6 text-center max-w-5xl mx-auto">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="absolute top-20 left-4 md:left-10 w-16 md:w-24 opacity-80 floating drop-shadow-2xl z-10" alt="Bitcoin">
+        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="absolute bottom-10 right-4 md:right-10 w-20 md:w-28 opacity-80 floating-delayed drop-shadow-2xl z-10" alt="Ethereum">
+        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="absolute top-32 right-12 md:right-24 w-12 md:w-16 opacity-70 floating drop-shadow-xl z-10" style="animation-delay: 1s;" alt="Tether">
+
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 tracking-tight relative z-20 dark:text-white" data-aos="fade-up">
+            Powerful Cryptocurrency <br><span class="text-brand">Payment Gateway</span>
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto relative z-20" data-aos="fade-up" data-aos-delay="100">
+            Send and accept crypto payments with our all-in-one platform, ensuring secure transactions and comprehensive management for businesses.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 relative z-20" data-aos="zoom-in" data-aos-delay="200">
+            <button class="bg-brand bg-brand-hover text-white px-10 py-4 rounded-xl font-bold w-full sm:w-auto shadow-[0_8px_20px_rgba(52,152,219,0.3)] hover:-translate-y-1 transition-all">Sign up for free</button>
+            <button class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-10 py-4 rounded-xl font-bold w-full sm:w-auto hover:bg-gray-50 dark:hover:bg-gray-700 hover:-translate-y-1 transition-all">Contact us</button>
+        </div>
+    </section>
+
+    <section class="py-12 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-transparent relative z-20">
+        <h3 class="text-center text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-8">We support most popular tokens and networks</h3>
+        <div class="marquee-container mb-8">
+            <div class="marquee-content items-center space-x-12 px-6">
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F3BA2F] rounded-full flex items-center justify-center text-white text-xs">B</span><span>Binance</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#FF0013] rounded-full flex items-center justify-center text-white text-xs">T</span><span>Tron</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#627EEA] rounded-full flex items-center justify-center text-white text-xs">Ξ</span><span>Ethereum</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#345D9D] rounded-full flex items-center justify-center text-white text-xs">Ł</span><span>Litecoin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#26A17B] rounded-full flex items-center justify-center text-white text-xs">₮</span><span>Tether</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F7931A] rounded-full flex items-center justify-center text-white text-xs">₿</span><span>BitcoinCash</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#2775CA] rounded-full flex items-center justify-center text-white text-xs">$</span><span>USD Coin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F7931A] rounded-full flex items-center justify-center text-white text-xs">₿</span><span>Bitcoin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#14F195] rounded-full flex items-center justify-center text-black text-xs">S</span><span>Solana</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F3BA2F] rounded-full flex items-center justify-center text-white text-xs">B</span><span>Binance</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#FF0013] rounded-full flex items-center justify-center text-white text-xs">T</span><span>Tron</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#627EEA] rounded-full flex items-center justify-center text-white text-xs">Ξ</span><span>Ethereum</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#345D9D] rounded-full flex items-center justify-center text-white text-xs">Ł</span><span>Litecoin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#26A17B] rounded-full flex items-center justify-center text-white text-xs">₮</span><span>Tether</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F7931A] rounded-full flex items-center justify-center text-white text-xs">₿</span><span>BitcoinCash</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#2775CA] rounded-full flex items-center justify-center text-white text-xs">$</span><span>USD Coin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#F7931A] rounded-full flex items-center justify-center text-white text-xs">₿</span><span>Bitcoin</span></div>
+                <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-400 font-semibold"><span class="w-8 h-8 bg-[#14F195] rounded-full flex items-center justify-center text-black text-xs">S</span><span>Solana</span></div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="bg-brand text-white px-8 py-2 rounded-xl font-bold hover:bg-brand-hover transition">See all</button>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-6xl py-24 space-y-12">
+        <div class="text-center mb-16 relative">
+            <h2 class="text-4xl md:text-5xl font-extrabold max-w-3xl mx-auto leading-tight relative z-20 dark:text-white" data-aos="fade-up">
+                Accepting Crypto Payments For Every Business Process
+            </h2>
+            <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="absolute -top-12 md:right-32 right-0 w-12 floating opacity-80 drop-shadow-xl hidden md:block" alt="Solana">
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left px-4">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Tools For Every<br>Process</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-lg mb-8 leading-relaxed">Receive payments based on your business process - invoices, orders, or static addresses.</p>
+                <div class="flex justify-center md:justify-start space-x-2">
+                    <div class="w-10 h-2 bg-brand rounded-full"></div>
+                    <div class="w-6 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div class="w-6 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-64 h-[420px] bg-white dark:bg-gray-800 border-8 border-gray-900 dark:border-gray-700 rounded-[2.5rem] premium-shadow relative overflow-hidden group-hover:-translate-y-2 transition-transform duration-500">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-5 bg-gray-900 dark:bg-gray-700 rounded-b-xl z-20"></div>
+                    <div class="p-4 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex justify-between items-center mt-4">
+                        <span class="font-bold text-xs text-gray-800 dark:text-gray-200">AnychainPay</span>
+                    </div>
+                    <div class="p-5"><p class="text-xs text-gray-400 font-medium">Payment due</p><p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">312.80 <span class="text-sm font-medium text-gray-500">USD</span></p></div>
+                    <div class="px-4 space-y-3">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs flex justify-between items-center shadow-sm">
+                            <span class="flex items-center gap-2 dark:text-gray-200"><div class="w-4 h-4 bg-orange-400 rounded-full"></div> BTC</span><span class="font-bold dark:text-gray-200">0.011</span>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-gray-800 border-2 border-brand p-3 rounded-xl text-xs flex justify-between items-center shadow-sm relative">
+                            <div class="absolute -top-2 -right-2 bg-brand text-white text-[8px] px-2 py-1 rounded-full font-bold">Selected</div>
+                            <span class="flex items-center gap-2 dark:text-gray-200"><div class="w-4 h-4 bg-green-500 rounded-full"></div> USDT</span><span class="font-bold text-brand">313.44</span>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-5 left-4 right-4"><button class="w-full bg-brand text-white text-sm py-3 rounded-xl font-bold shadow-lg">Pay with USDT (TRC20)</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Crypto Withdrawals</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-lg leading-relaxed">Unlimited withdrawals with no daily limits. Experience instant deposits, as all received funds are immediately available for withdrawal. Choose between manual or API withdrawals according to your preference.</p>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative">
+                <div class="relative w-48 h-48 floating">
+                    <div class="absolute top-4 right-4 w-32 h-24 bg-gradient-to-br from-blue-400 to-brand rounded-2xl transform rotate-12 shadow-2xl"></div>
+                    <div class="absolute bottom-4 left-4 w-40 h-20 bg-gray-900 rounded-2xl transform -rotate-6 shadow-2xl flex items-center px-6">
+                        <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                        <span class="text-white ml-3 font-semibold">Processed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Accept In Crypto, Get Settled In Fiat</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-lg leading-relaxed mb-8">Avoid the complexities and volatility of cryptocurrencies. Our flawless fiat settlement services allow you to effortlessly move funds between crypto and fiat directly into your banking accounts. Experience simplified transactions and embrace stability with us.</p>
+                <button class="bg-brand text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-brand-hover transition-all hover:-translate-y-1">View more</button>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative floating">
+                <div class="w-24 h-24 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-full shadow-2xl flex items-center justify-center text-4xl font-bold text-gray-400 absolute top-0 left-4 z-10">€</div>
+                <div class="w-32 h-32 bg-[#121D33] dark:bg-black border border-transparent dark:border-gray-800 rounded-full shadow-2xl flex items-center justify-center text-5xl font-bold text-white relative z-20">£</div>
+                <div class="w-24 h-24 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-full shadow-2xl flex items-center justify-center text-4xl font-bold text-green-500 absolute bottom-0 right-4 z-10">$</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 container mx-auto px-6 max-w-6xl border-t border-gray-100 dark:border-gray-800">
+        <div class="flex flex-col md:flex-row gap-16 items-center">
+            <div class="md:w-1/3" data-aos="fade-right">
+                <h3 class="text-brand text-4xl font-bold mb-2">API</h3>
+                <h2 class="text-4xl font-bold mb-8 dark:text-white">Integration</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Agile Integration</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Depending on your business process, we can adapt and help with the choice of integration methods.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Easy To Setup</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">A comprehensive documentation, providing clear step-by-step instructions. Additionally, our team is available to provide support throughout the integration process.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">E-Commerce Plugin</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Streamline your integration process with ease by leveraging our compatibility with the most popular e-commerce extensions.</p>
+                    </div>
+                </div>
+                <button class="mt-8 border border-gray-300 dark:border-gray-700 px-6 py-3 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:border-brand dark:hover:border-brand hover:text-brand transition">Check documentation</button>
+            </div>
+            <div class="md:w-2/3 w-full" data-aos="fade-left">
+                <div class="code-block rounded-2xl shadow-2xl overflow-hidden premium-shadow">
+                    <div class="bg-gray-900 px-4 py-3 flex items-center space-x-2 border-b border-gray-800">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-yellow-500"></div><div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-4 text-xs text-gray-500 font-mono">json</span>
+                    </div>
+                    <div class="p-6 text-sm font-mono overflow-x-auto">
+<pre><code>{
+  <span class="code-key">"id"</span>: <span class="code-string">"d81db3a2-15dc-b63a-b34e-46cad2345bf2"</span>,
+  <span class="code-key">"advancedBalanceId"</span>: <span class="code-string">"c4a7db8c-ca10-437c-147b-2ddc3015d8a4"</span>,
+  <span class="code-key">"currency"</span>: <span class="code-string">"ETH"</span>,
+  <span class="code-key">"network"</span>: <span class="code-string">"ethereum"</span>,
+  <span class="code-key">"status"</span>: <span class="code-string">"processed"</span>,
+  <span class="code-key">"amount"</span>: <span class="code-string">"9.04"</span>,
+  <span class="code-key">"received"</span>: <span class="code-string">"9.04"</span>
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#F4F7FA] dark:bg-[#0F172A] py-24 relative overflow-hidden transition-colors duration-300">
+        <div class="container mx-auto px-6 max-w-6xl flex flex-col md:flex-row items-center gap-16 relative z-10">
+            <div class="md:w-1/2 flex justify-center" data-aos="fade-right">
+                <div class="w-72 h-[500px] bg-[#121D33] rounded-[2.5rem] shadow-2xl relative overflow-hidden border-8 border-gray-800 text-white hover:-translate-y-2 transition-transform duration-500">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="font-bold">AnychainPay</span>
+                            <span class="w-6 h-6 bg-red-500 rounded-full"></span>
+                        </div>
+                        <h4 class="text-xl mb-4">New Subscription</h4>
+                        <div class="bg-gray-800 p-3 rounded-lg mb-2 flex justify-between items-center text-sm">
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 bg-green-500 rounded-full"></div> Tether USDT</span>
+                            <span class="text-gray-400">TRC20</span>
+                        </div>
+                        <div class="bg-gray-800 border border-brand p-3 rounded-lg mb-2 flex justify-between items-center text-sm">
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 bg-blue-500 rounded-full"></div> USD Coin</span>
+                            <span class="text-gray-400">ERC20</span>
+                        </div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <button class="w-full bg-brand text-white py-3 rounded-xl font-bold">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative" data-aos="fade-left">
+                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" class="absolute -top-16 right-0 w-16 floating opacity-80 drop-shadow-xl" alt="USDC">
+                <h2 class="text-5xl font-bold mb-6 dark:text-white">Recurring<br>Payments</h2>
+                <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">Our user-friendly recurring payment system designed specifically for online businesses. Our innovative solution operates through a smart contract, streamlining the process for merchants and requiring only a web3 wallet for seamless partner subscriptions.</p>
+                <button class="bg-brand text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-brand-hover hover:-translate-y-1 transition-all">More info</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-6xl space-y-12 py-24">
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-4xl font-bold mb-4 dark:text-white">Business<br>Wallet</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg">Seamlessly receive payments, securely store funds for future use, efficiently manage your finances, and gain insights into address-specific transactions.</p>
+            </div>
+            <div class="md:w-1/2 flex justify-center floating">
+                <div class="w-48 h-40 bg-[#E1F0FA] dark:bg-gray-800 rounded-2xl shadow-2xl border-l-8 border-brand relative flex items-center justify-end px-4">
+                    <div class="w-16 h-8 bg-white dark:bg-gray-700 rounded flex items-center justify-center shadow"><div class="w-4 h-4 rounded-full bg-brand"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-4xl font-bold mb-4 dark:text-white">Comprehensive<br>Analytics</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg mb-6">Gain valuable insights with dynamic dashboards and flexible export options. Dive deep into transaction analysis by address for a thorough understanding of your data.</p>
+                <button class="bg-brand text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-brand-hover hover:-translate-y-1 transition-all">Contact us</button>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-white dark:bg-[#1E293B] p-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform duration-500">
+                    <div class="flex justify-between items-center border-b dark:border-gray-700 pb-4 mb-4">
+                        <span class="font-bold dark:text-white">Dashboard</span>
+                        <span class="text-xs bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-gray-500 dark:text-gray-300">Overview for 24h</span>
+                    </div>
+                    <div class="flex gap-4 mb-6">
+                        <div class="flex-1 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl"><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Gross volume</p><p class="font-bold text-green-500">+254.24 USD</p></div>
+                        <div class="flex-1 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl"><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Net volume</p><p class="font-bold text-red-500">-14.12 USD</p></div>
+                    </div>
+                    <div class="h-32 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 flex items-end px-4 py-2 space-x-3">
+                        <div class="w-1/5 bg-blue-200 dark:bg-blue-900 h-1/2 rounded-t-md"></div>
+                        <div class="w-1/5 bg-brand h-4/5 rounded-t-md"></div>
+                        <div class="w-1/5 bg-blue-200 dark:bg-blue-900 h-1/3 rounded-t-md"></div>
+                        <div class="w-1/5 bg-brand h-full rounded-t-md"></div>
+                        <div class="w-1/5 bg-blue-200 dark:bg-blue-900 h-2/3 rounded-t-md"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 text-center container mx-auto px-6 max-w-5xl" data-aos="fade-up">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 dark:text-white">Exchange And Cross-Chain</h2>
+        <p class="text-gray-600 dark:text-gray-400 text-lg mb-16 max-w-3xl mx-auto">Protect yourself from volatility by exchanging Bitcoin for USDT or any other preferred coin. Additionally, enjoy the convenience of transferring your tokens between blockchains for easy withdrawal to external wallets.</p>
+        
+        <div class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-[2.5rem] premium-shadow p-6 relative mx-auto max-w-4xl h-96 overflow-hidden">
+             <div class="absolute top-0 left-0 w-full bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-700 px-8 py-4 flex justify-between items-center">
+                 <span class="font-bold text-gray-800 dark:text-white">Transactions</span>
+                 <div class="flex space-x-2"><div class="w-3 h-3 bg-red-400 rounded-full"></div><div class="w-3 h-3 bg-yellow-400 rounded-full"></div><div class="w-3 h-3 bg-green-400 rounded-full"></div></div>
+             </div>
+             <div class="mt-20 space-y-4 px-4 opacity-50">
+                 <div class="h-12 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center px-6 justify-between"><div class="w-1/4 h-2 bg-gray-300 dark:bg-gray-600 rounded"></div><div class="w-1/4 h-2 bg-gray-300 dark:bg-gray-600 rounded"></div><div class="w-1/4 h-2 bg-blue-200 dark:bg-blue-900 rounded"></div></div>
+                 <div class="h-12 bg-gray-50 dark:bg-gray-800 rounded-xl flex items-center px-6 justify-between"><div class="w-1/4 h-2 bg-gray-300 dark:bg-gray-600 rounded"></div><div class="w-1/4 h-2 bg-gray-300 dark:bg-gray-600 rounded"></div><div class="w-1/4 h-2 bg-blue-200 dark:bg-blue-900 rounded"></div></div>
+             </div>
+             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-700 rounded-2xl p-6 z-10 hover:-translate-y-1/2 hover:scale-105 transition-transform duration-300">
+                 <h4 class="font-bold mb-6 text-center text-lg dark:text-white">Exchange Confirmation</h4>
+                 <div class="flex justify-between items-center mb-6">
+                     <div class="text-center bg-gray-50 dark:bg-gray-800 p-3 rounded-xl flex-1"><p class="text-xs text-gray-400 mb-1">From</p><p class="font-bold flex justify-center items-center gap-2 dark:text-white"><span class="w-5 h-5 bg-green-500 rounded-full inline-block"></span> USDT</p></div>
+                     <div class="px-4"><span class="text-brand font-bold text-2xl">⇌</span></div>
+                     <div class="text-center bg-gray-50 dark:bg-gray-800 p-3 rounded-xl flex-1"><p class="text-xs text-gray-400 mb-1">To</p><p class="font-bold flex justify-center items-center gap-2 dark:text-white"><span class="w-5 h-5 bg-blue-500 rounded-full inline-block"></span> USDC</p></div>
+                 </div>
+                 <button class="w-full bg-brand text-white py-3 rounded-xl font-bold shadow-md">Confirm</button>
+             </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-6xl space-y-12 pb-24">
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-4xl font-bold mb-4 dark:text-white">Orphan transactions</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg">Eliminate concerns over incorrect coin transactions from your partners. With our platform, you can effortlessly rescue transactions involving the wrong coin. Say goodbye to waiting for support - a simple click is all it takes to save the day!</p>
+            </div>
+            <div class="md:w-1/2 flex justify-end">
+                <div class="w-72 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-5 hover:-translate-y-2 transition-transform duration-500">
+                    <div class="flex justify-between mb-4"><span class="text-sm font-bold text-gray-800 dark:text-white">Orphan transactions</span><span class="text-xs bg-red-100 dark:bg-red-900/50 text-red-500 px-2 py-1 rounded">Action Needed</span></div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-xl text-xs"><span class="text-gray-400">14/02 12:30</span><span class="text-green-500 font-bold">+1.5 ETH</span><button class="bg-brand text-white px-3 py-1.5 rounded-lg shadow">Rescue</button></div>
+                        <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-xl text-xs"><span class="text-gray-400">14/02 11:15</span><span class="text-green-500 font-bold">+100 USDT</span><button class="bg-brand text-white px-3 py-1.5 rounded-lg shadow">Rescue</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between" data-aos="fade-up">
+            <div class="md:w-1/2 mb-10 md:mb-0 pr-8">
+                <h3 class="text-4xl font-bold mb-4 dark:text-white">Know your transaction</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg">KYT is an AML solution that safeguards against money laundering and fraud. With real-time monitoring, KYT ensures transaction integrity, compliance, and risk detection for your business. Protect your business and customers with our powerful KYT feature.</p>
+            </div>
+            <div class="md:w-1/2 flex justify-center floating">
+                <div class="w-56 h-36 bg-white dark:bg-[#1E293B] rounded-[2rem] shadow-2xl flex items-center justify-center border-4 border-[#E1F0FA] dark:border-gray-800">
+                    <span class="text-brand font-mono font-bold text-4xl leading-none text-center">011<br>100</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 pb-24">
+        <div class="bg-white dark:bg-[#111827] premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-10 flex flex-col justify-between border border-gray-100 dark:border-gray-800" data-aos="fade-right">
+            <div>
+                <h3 class="text-3xl font-bold mb-4 dark:text-white">Technical<br>support</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">Get unlimited assistance via video, audio, and chat for seamless integration. Swiftly resolve issues with expert precision and uninterrupted support available round the clock.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-brand text-white text-sm p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-md">Hello, I have a problem with integration...</div>
+                <div class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm p-4 rounded-2xl rounded-br-none max-w-[80%] ml-auto shadow-sm">Hello, sure! 👋</div>
+                <div class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm p-4 rounded-2xl rounded-br-none max-w-[80%] ml-auto shadow-sm">Tell me where exactly??</div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-10 flex flex-col relative overflow-hidden border border-gray-100 dark:border-gray-800" data-aos="fade-left">
+            <h3 class="text-3xl font-bold mb-8 z-10 dark:text-white">Security and<br>Protection</h3>
+            <div class="space-y-6 z-10">
+                <div class="flex items-start gap-4"><div class="number-badge dark:bg-brand/20">1</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed pt-1"><strong>Two-Factor Authentication</strong></p></div>
+                <div class="flex items-start gap-4"><div class="number-badge dark:bg-brand/20">2</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed pt-1">We are a registered and established company, fully compliant with EU regulations under the laws of Lithuania.</p></div>
+                <div class="flex items-start gap-4"><div class="number-badge dark:bg-brand/20">3</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed pt-1">We store your funds on real blockchain addresses, avoiding synthetic records for utmost security and transparency.</p></div>
+                <div class="flex items-start gap-4"><div class="number-badge dark:bg-brand/20">4</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed pt-1">Ensure secure access to the AnychainPay API by exclusively granting permissions to verified IP addresses.</p></div>
+            </div>
+            <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-brand opacity-10 rounded-full blur-3xl z-0"></div>
+        </div>
+    </section>
+
+    <section class="bg-gray-900 py-20 overflow-hidden relative">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-center text-3xl font-bold text-white mb-12">Media About Us</h2>
+            <div class="flex items-center relative">
+                <button id="media-left" class="absolute left-0 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none -ml-5 md:ml-0">‹</button>
+                <div id="media-carousel" class="flex items-center gap-12 md:gap-24 overflow-x-auto scroll-smooth no-scrollbar px-12 md:px-16 w-full py-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Forbes_logo.svg/200px-Forbes_logo.svg.png" class="h-6 object-contain opacity-50 hover:opacity-100 transition grayscale hover:grayscale-0 filter" alt="Forbes">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Bloomberg_logo.svg/200px-Bloomberg_logo.svg.png" class="h-6 object-contain opacity-50 hover:opacity-100 transition grayscale hover:grayscale-0 filter" alt="Bloomberg">
+                    <span class="text-white font-bold text-2xl tracking-widest opacity-50 hover:opacity-100 transition whitespace-nowrap">BSC NEWS</span>
+                    <span class="text-white font-bold text-2xl tracking-widest font-serif opacity-50 hover:opacity-100 transition whitespace-nowrap">MINYANVILLE</span>
+                    <span class="text-white font-bold text-xl tracking-widest border border-white p-2 opacity-50 hover:opacity-100 transition whitespace-nowrap">YAHOO FINANCE</span>
+                    <span class="text-white font-bold text-2xl tracking-widest opacity-50 hover:opacity-100 transition whitespace-nowrap">TECHCRUNCH</span>
+                </div>
+                <button id="media-right" class="absolute right-0 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none -mr-5 md:mr-0">›</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white dark:bg-[#0B1120] text-gray-500 dark:text-gray-400 py-16 text-sm border-t border-gray-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="container mx-auto px-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-12 pb-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">ANYCHAIN<span class="text-brand">PAY</span></div>
+                <p class="mb-4 max-w-sm leading-relaxed">The professional choice for accepting cryptocurrency payments securely and seamlessly across borders.</p>
+                <p class="text-xs">© 2026 AnychainPay. All Rights Reserved</p>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Company</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Contact us</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Download logo</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Referral Program</a>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Legal & Dev</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">API Documentation</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Privacy policy</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Terms of use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true, offset: 50 });
+
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Check local storage or system preferences on load
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            lightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
+        } else {
+            darkIcon.classList.remove('hidden');
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Toggle function
+        function toggleTheme() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        mobileThemeToggleBtn.addEventListener('click', toggleTheme);
+
+
+        // --- MOBILE MENU LOGIC ---
+        const mainNav = document.getElementById('main-nav');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+        let isMenuOpen = false;
+
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                // Open
+                mobileMenu.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+                
+                mainNav.classList.remove('glass');
+                mainNav.classList.add('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                // Close
+                mobileMenu.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+                
+                mainNav.classList.add('glass');
+                mainNav.classList.remove('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // --- DESKTOP DROPDOWN LOGIC ---
+        const desktopBtn = document.getElementById('desktop-menu-btn');
+        const desktopDropdown = document.getElementById('desktop-dropdown');
+        
+        desktopBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            desktopDropdown.classList.toggle('hidden');
+            setTimeout(() => {
+                desktopDropdown.classList.toggle('opacity-0');
+                desktopDropdown.classList.toggle('scale-95');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!desktopDropdown.classList.contains('hidden') && !desktopBtn.contains(e.target) && !desktopDropdown.contains(e.target)) {
+                desktopDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    desktopDropdown.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        // --- CAROUSEL LOGIC ---
+        const mediaCarousel = document.getElementById('media-carousel');
+        const mediaLeft = document.getElementById('media-left');
+        const mediaRight = document.getElementById('media-right');
+        const scrollAmount = 300; 
+
+        mediaLeft.addEventListener('click', () => { mediaCarousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
+        mediaRight.addEventListener('click', () => { mediaCarousel.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
+    </script>
+</body>
+</html>

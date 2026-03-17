@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurring Payments | AnychainPay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#3498DB',
+                        'brand-hover': '#2980B9',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; 
+        }
+        
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .dark .glass { background: rgba(11, 17, 32, 0.85); }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+        .floating-delayed { animation: float 7s ease-in-out infinite 2s; }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); }
+        .premium-shadow-hover:hover { box-shadow: 0 20px 40px -10px rgba(52, 152, 219, 0.15); }
+        .dark .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3); }
+
+        /* Setup initial theme to prevent flicker */
+        .dark body { background-color: #0B1120; color: #F3F4F6; }
+
+        .huge-watermark {
+            font-size: 15rem;
+            line-height: 0.8;
+            font-weight: 800;
+            opacity: 0.05;
+            position: absolute;
+            bottom: -2rem;
+            left: -1rem;
+            color: #3498DB;
+            pointer-events: none;
+        }
+        .dark .huge-watermark { opacity: 0.1; }
+    </style>
+</head>
+<body class="bg-[#FAFCFF] text-[#121D33] dark:bg-[#0B1120] dark:text-gray-100 transition-colors duration-300">
+
+    <nav id="main-nav" class="glass fixed w-full top-0 z-50 border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
+        <div class="flex justify-between items-center px-6 md:px-12 py-4">
+            <div class="text-2xl font-extrabold tracking-tight z-50 relative dark:text-white">ANYCHAIN<span class="text-brand">PAY</span></div>
+            <div class="hidden md:flex items-center space-x-5">
+                <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand dark:hover:text-brand transition">Log in</a>
+                <a href="#" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-sm font-semibold hover:border-brand hover:text-brand dark:hover:border-brand transition">Sign up</a>
+                
+                <button id="theme-toggle" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+                
+                <button class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">文A</button>
+                <div class="relative">
+                    <button id="desktop-menu-btn" class="border border-gray-200 dark:border-gray-700 p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <div id="desktop-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white dark:bg-gray-900 rounded-2xl premium-shadow border border-gray-100 dark:border-gray-800 py-2 opacity-0 transform scale-95 transition-all duration-200 origin-top-right">
+                        <a href="prices.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Prices</a>
+                        <a href="features.html" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Features</a>
+                        <a href="recurrent.html" class="block px-5 py-3 text-sm font-medium text-brand dark:bg-gray-800 transition">Recurring</a>
+                        <a href="#" class="block px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-brand transition">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="mobile-menu-btn" class="md:hidden z-50 relative p-2 text-gray-600 dark:text-gray-300 focus:outline-none bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div id="mobile-menu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 transform -translate-y-full opacity-0 pointer-events-none transition-all duration-300 ease-in-out pt-24 px-6 md:hidden">
+            <div class="flex flex-col space-y-6 text-center">
+                <a href="prices.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Prices</a>
+                <a href="features.html" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Features</a>
+                <a href="recurrent.html" class="text-xl font-bold text-brand">Recurring</a>
+                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-brand">Contact Us</a>
+                <hr class="border-gray-100 dark:border-gray-800">
+                <div class="flex justify-center mb-2">
+                    <button id="mobile-theme-toggle" class="border border-gray-200 dark:border-gray-700 px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 flex items-center justify-center space-x-2">
+                        <span>Switch Theme</span>
+                    </button>
+                </div>
+                <a href="#" class="text-lg font-semibold text-gray-600 dark:text-gray-300">Log in</a>
+                <a href="#" class="bg-brand text-white py-3 rounded-xl text-lg font-bold">Sign up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-40 pb-20 px-6 relative overflow-hidden bg-[#F4F7FA] dark:bg-[#080D1A] transition-colors duration-300">
+        <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-transparent to-blue-50 dark:to-blue-900/10 pointer-events-none"></div>
+
+        <div class="container mx-auto max-w-6xl flex flex-col md:flex-row items-center gap-12 relative z-10">
+            <div class="md:w-1/2 text-center md:text-left" data-aos="fade-right">
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 tracking-tight dark:text-white">
+                    Web3 <span class="text-brand">Recurring</span> Payments
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400 text-lg md:text-xl mb-10 max-w-md mx-auto md:mx-0 leading-relaxed">
+                    Upgrade your payment game with our easy-to-use Web3 recurring payment platform.
+                </p>
+                <button class="bg-brand bg-brand-hover text-white px-10 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:-translate-y-1 transition-all">Sign up</button>
+            </div>
+            
+            <div class="md:w-1/2 flex justify-center md:justify-end" data-aos="fade-left">
+                <div class="w-72 h-[500px] bg-gray-900 dark:bg-black rounded-[2.5rem] shadow-2xl relative overflow-hidden border-8 border-gray-800 text-white floating premium-shadow">
+                    <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="font-bold">AnychainPay</span>
+                            <span class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-[10px]">A</span>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4">New Subscription</h4>
+                        <p class="text-xs text-gray-400 mb-6">Setup automatic crypto payments</p>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-gray-800 border border-gray-700 p-4 rounded-xl flex justify-between items-center text-sm shadow-inner">
+                                <span class="flex items-center gap-2 font-semibold"><div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-[10px]">₮</div> Tether USDT</span>
+                                <span class="text-gray-400 text-xs">TRC20</span>
+                            </div>
+                            <div class="bg-blue-900/40 border border-brand p-4 rounded-xl flex justify-between items-center text-sm shadow-inner relative">
+                                <div class="absolute -top-2 -right-2 bg-brand text-white text-[8px] px-2 py-1 rounded-full font-bold">Selected</div>
+                                <span class="flex items-center gap-2 font-semibold"><div class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-[10px]">$</div> USD Coin</span>
+                                <span class="text-brand text-xs">ERC20</span>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <button class="w-full bg-brand hover:bg-brand-hover text-white py-4 rounded-xl font-bold transition">Confirm Subscription</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24 space-y-12">
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-3/5 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">What Are Recurring<br>Payments?</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+                    Recurring payments are a payment method where a customer authorizes a merchant to automatically charge a fixed or variable amount at regular intervals. It allows for easy budgeting and eliminates the need to manually make payments. Commonly used for subscriptions and memberships.
+                </p>
+            </div>
+            <div class="md:w-2/5 flex justify-center relative floating">
+                <div class="relative w-48 h-32 bg-gradient-to-br from-blue-300 to-brand rounded-2xl shadow-2xl transform rotate-12 -skew-x-12 border border-blue-400/50">
+                    <div class="absolute top-4 left-4 w-10 h-6 bg-yellow-400/80 rounded flex items-center px-1"><div class="w-full h-1 bg-yellow-600/50 rounded"></div></div>
+                    <div class="absolute bottom-4 left-4 right-4 h-4 bg-white/30 rounded"></div>
+                    <div class="absolute -bottom-10 -right-6 w-32 h-20 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-xl transform rotate-12 -skew-x-12 grid grid-cols-3 gap-1 p-2 border border-gray-200 dark:border-gray-700">
+                        <div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div><div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div><div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div>
+                        <div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div><div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div><div class="bg-gray-300 dark:bg-gray-600 rounded-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#111827] border border-transparent dark:border-gray-800 premium-shadow premium-shadow-hover transition-all duration-300 rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between group" data-aos="fade-up">
+            <div class="md:w-3/5 mb-10 md:mb-0 pr-8">
+                <h3 class="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">The Problem Of Recurring<br>Payments In<br>Cryptocurrency</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+                    Blockchain technology has struggled to keep pace with traditional financial systems in terms of accepting recurring payments. AnychainPay has addressed this challenge by introducing a revolutionary Web3 recurring payment platform. Similar to fiat-based subscription platforms, this platform allows for the seamless, automatic processing of payments using cryptocurrency.
+                </p>
+            </div>
+            <div class="md:w-2/5 flex justify-center relative floating-delayed">
+                <div class="relative w-32 h-40 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl transform -rotate-12 border-t-8 border-brand flex flex-col pt-2 items-center">
+                    <div class="w-full flex justify-around px-4 mb-2">
+                        <div class="w-2 h-4 bg-gray-400 rounded-full -mt-6 shadow"></div>
+                        <div class="w-2 h-4 bg-gray-400 rounded-full -mt-6 shadow"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 p-2 opacity-50 w-full">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded-sm"></div><div class="h-4 bg-gray-200 dark:bg-gray-600 rounded-sm"></div><div class="h-4 bg-brand/50 rounded-sm"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded-sm"></div><div class="h-4 bg-gray-200 dark:bg-gray-600 rounded-sm"></div><div class="h-4 bg-gray-200 dark:bg-gray-600 rounded-sm"></div>
+                    </div>
+                    <div class="absolute -left-12 top-10 w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full shadow-lg flex items-center justify-center font-bold text-brand transform rotate-12 text-xl">₿</div>
+                    <div class="absolute -right-8 bottom-4 w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full shadow-lg flex items-center justify-center font-bold text-green-600 transform -rotate-12 text-lg">₮</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 container mx-auto px-6 max-w-6xl text-center border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl md:text-5xl font-bold mb-16 dark:text-white" data-aos="fade-up">How Does This Work For The Merchant?</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] p-8 rounded-3xl premium-shadow-hover transition-transform duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-16 h-16 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-200 dark:border-gray-600">
+                    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-relaxed">Create an offer to subscribe through your personal account or through the API</p>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] p-8 rounded-3xl premium-shadow-hover transition-transform duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-16 h-16 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-200 dark:border-gray-600">
+                    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-relaxed">Set the subscription price and frequency of debiting</p>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] p-8 rounded-3xl premium-shadow-hover transition-transform duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-16 h-16 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-200 dark:border-gray-600">
+                    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-relaxed">Place an offer on your site, or send it directly to your customers</p>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] p-8 rounded-3xl premium-shadow-hover transition-transform duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-16 h-16 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-200 dark:border-gray-600">
+                    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-relaxed">Get regular payments for your services</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#FAFCFF] dark:bg-[#0B1120] text-center">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold mb-16 dark:text-white" data-aos="fade-up">Advantages Of Recurring Payments</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
+                <div class="bg-white dark:bg-[#111827] p-10 rounded-3xl premium-shadow border border-transparent dark:border-gray-800">
+                    <div class="w-14 h-14 bg-brand/10 dark:bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 dark:text-white">Lower transaction fees</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Transactions on the blockchain are generally cheaper than traditional payment methods.</p>
+                </div>
+                <div class="bg-white dark:bg-[#111827] p-10 rounded-3xl premium-shadow border border-transparent dark:border-gray-800">
+                    <div class="w-14 h-14 bg-brand/10 dark:bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 dark:text-white">Borderless transactions</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Cryptocurrency can be used globally, and payments can be made without the need for currency conversion.</p>
+                </div>
+                <div class="bg-white dark:bg-[#111827] p-10 rounded-3xl premium-shadow border border-transparent dark:border-gray-800">
+                    <div class="w-14 h-14 bg-brand/10 dark:bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 dark:text-white">Faster Settlements</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Seamlessly receive payments, securely store funds for future use, efficiently manage your finances, and gain insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 container mx-auto px-6 max-w-4xl text-center border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl font-bold mb-12 dark:text-white" data-aos="fade-up">Supported Networks</h2>
+        <div class="flex flex-wrap justify-center gap-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-2xl py-6 px-10 flex flex-col items-center justify-center w-40 hover:-translate-y-1 transition-transform cursor-default">
+                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="h-10 mb-4" alt="Ethereum">
+                <span class="font-bold text-gray-800 dark:text-white text-sm">Ethereum</span>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-2xl py-6 px-10 flex flex-col items-center justify-center w-40 hover:-translate-y-1 transition-transform cursor-default">
+                <img src="https://cryptologos.cc/logos/tron-trx-logo.png" class="h-10 mb-4" alt="Tron">
+                <span class="font-bold text-gray-800 dark:text-white text-sm">Tron</span>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-2xl py-6 px-10 flex flex-col items-center justify-center w-40 hover:-translate-y-1 transition-transform cursor-default">
+                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="h-10 mb-4" alt="Solana">
+                <span class="font-bold text-gray-800 dark:text-white text-sm">Solana</span>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-2xl py-6 px-10 flex flex-col items-center justify-center w-40 hover:-translate-y-1 transition-transform cursor-default">
+                <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="h-10 mb-4" alt="Binance">
+                <span class="font-bold text-gray-800 dark:text-white text-sm">Binance</span>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-2xl py-6 px-10 flex flex-col items-center justify-center w-40 hover:-translate-y-1 transition-transform cursor-default">
+                <img src="https://cryptologos.cc/logos/fantom-ftm-logo.png" class="h-10 mb-4" alt="Fantom">
+                <span class="font-bold text-gray-800 dark:text-white text-sm">Fantom</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 container mx-auto px-6 max-w-5xl text-center border-t border-gray-100 dark:border-gray-800">
+        <h2 class="text-4xl font-bold mb-12 dark:text-white" data-aos="fade-up">Supported Wallets</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-3xl py-10 px-6 flex flex-col items-center premium-shadow-hover transition-transform hover:-translate-y-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="h-16 mb-6" alt="Metamask">
+                <h4 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Metamask</h4>
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">> 10,000,000 users</p>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-3xl py-10 px-6 flex flex-col items-center premium-shadow-hover transition-transform hover:-translate-y-2">
+                <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-3xl mb-6 shadow-lg">T</div>
+                <h4 class="font-bold text-xl text-gray-900 dark:text-white mb-2">TronLink</h4>
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">> 500,000 users</p>
+            </div>
+            <div class="bg-[#F8F9FA] dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 rounded-3xl py-10 px-6 flex flex-col items-center premium-shadow-hover transition-transform hover:-translate-y-2">
+                <div class="w-16 h-16 bg-[#0052FF] rounded-full flex items-center justify-center mb-6 shadow-lg">
+                    <div class="w-6 h-6 bg-white rounded-full"></div>
+                </div>
+                <h4 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Coinbase Wallet</h4>
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">> 1,000,000 users</p>
+            </div>
+        </div>
+        
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 text-sm font-medium leading-relaxed">
+            As well as any non-custodial wallets, including: Trust Wallet, MyEtherWallet, Coinomi, Exodus, OCX and others
+        </p>
+        <button class="bg-brand hover:bg-brand-hover text-white px-12 py-3 rounded-xl font-bold shadow-lg transition-all hover:-translate-y-1">Start</button>
+    </section>
+
+    <section class="container mx-auto px-6 max-w-5xl py-24">
+        <div class="flex flex-col md:flex-row gap-8">
+            
+            <div class="w-full md:w-1/2 bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-10 md:p-14 premium-shadow relative overflow-hidden" data-aos="fade-right">
+                <h3 class="text-4xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">Our<br>Commission</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg relative z-10 leading-relaxed max-w-xs">
+                    The commission is charged when payment arrives on your account. Your end user does not see this, and it is not reflected for him.
+                </p>
+                <div class="huge-watermark">0.7%</div>
+            </div>
+
+            <div class="w-full md:w-1/2 bg-[#E6F3FA] dark:bg-[#1E293B] border border-transparent dark:border-gray-700 rounded-[2.5rem] p-10 md:p-14 premium-shadow relative overflow-hidden" data-aos="fade-left">
+                <h3 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">Custom User<br>Notification</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-sm">
+                    When a subscriber's cryptocurrency balance is no longer sufficient to support their recurring payment, we will send a reminder for them to add funds to their account in order to continue their subscription.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300 font-semibold mb-6 text-sm">You choose which reminders to send and which not:</p>
+                
+                <ul class="space-y-4 relative z-10">
+                    <li class="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs">✓</div> Insufficient funds</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs">✓</div> Write-off is approaching</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs mt-0.5 shrink-0">✓</div> Write-off is approaching, but there are not enough funds</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs">✓</div> New subscription</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs">✓</div> Subscription canceled</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-200"><div class="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center text-white text-xs">✓</div> Subscription write-off</li>
+                </ul>
+
+                <div class="absolute -bottom-6 -right-6 w-40 h-32 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl rounded-br-none border border-gray-100 dark:border-gray-700 flex items-center justify-center gap-2 transform -rotate-6 floating">
+                    <div class="w-4 h-4 bg-brand rounded-full"></div>
+                    <div class="w-4 h-4 bg-brand rounded-full"></div>
+                    <div class="w-4 h-4 bg-brand rounded-full"></div>
+                    <div class="absolute bottom-0 -right-4 w-8 h-8 bg-white dark:bg-gray-800 transform rotate-45 border-r border-b border-gray-100 dark:border-gray-700"></div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#F8F9FA] dark:bg-[#080D1A] border-t border-gray-100 dark:border-gray-800 text-center relative overflow-hidden transition-colors duration-300">
+        <div class="absolute -left-20 top-1/2 transform -translate-y-1/2 w-64 h-64 border-[40px] border-gray-200/50 dark:border-gray-800/50 rounded-3xl -rotate-12 pointer-events-none"></div>
+        <div class="absolute -right-20 top-1/2 transform -translate-y-1/2 w-64 h-64 border-[40px] border-gray-200/50 dark:border-gray-800/50 rounded-3xl rotate-12 pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 max-w-4xl relative z-10" data-aos="zoom-in">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 dark:text-white">Who We Are?</h2>
+            
+            <div class="relative px-8 md:px-16 mb-12">
+                <span class="absolute top-0 left-0 text-6xl text-brand font-serif leading-none opacity-50">"</span>
+                <p class="text-gray-700 dark:text-gray-300 text-lg md:text-xl leading-relaxed font-medium inline-block">
+                    Our company is at the forefront of the cryptocurrency processing industry. Leveraging the expertise of our seasoned blockchain team with over 5 years of experience, we've processed over 1 billion dollars in transactions to date. Our platform offers unparalleled security, reliability and efficiency. Our cutting-edge technology and highly skilled team make us the go-to choice for businesses looking to integrate crypto payments seamlessly.
+                </p>
+                <span class="absolute bottom-0 right-0 text-6xl text-brand font-serif leading-none opacity-50 transform translate-y-4">"</span>
+            </div>
+            
+            <button class="bg-brand hover:bg-brand-hover text-white px-10 py-3 rounded-xl font-bold shadow-lg transition-all hover:-translate-y-1">Contact us</button>
+        </div>
+    </section>
+
+    <footer class="bg-white dark:bg-[#0B1120] text-gray-500 dark:text-gray-400 py-16 text-sm border-t border-gray-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="container mx-auto px-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-12 pb-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">ANYCHAIN<span class="text-brand">PAY</span></div>
+                <p class="mb-4 max-w-sm leading-relaxed">The professional choice for accepting cryptocurrency payments securely and seamlessly across borders.</p>
+                <p class="text-xs">© 2026 AnychainPay. All Rights Reserved</p>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Company</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Contact us</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Download logo</a>
+                <a href="referral.html" class="hover:text-brand dark:hover:text-brand transition">Referral Program</a>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Legal & Dev</h4>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">API Documentation</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Privacy policy</a>
+                <a href="#" class="hover:text-brand dark:hover:text-brand transition">Terms of use</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="fixed bottom-6 right-6 flex items-end gap-4 z-50 floating">
+        <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-4 py-3 rounded-2xl shadow-2xl text-sm border border-gray-100 dark:border-gray-700 font-medium">
+            Hi 👋 My name is Helen. Let's chat! I a... <br><span class="text-gray-400 text-xs">Helen • 1mo</span>
+        </div>
+        <div class="w-14 h-14 bg-brand rounded-full shadow-2xl flex items-center justify-center text-white text-2xl cursor-pointer hover:bg-brand-hover transition relative">
+            💬
+            <div class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 text-[8px] flex justify-center items-center">1</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true, offset: 50 });
+
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            lightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
+        } else {
+            darkIcon.classList.remove('hidden');
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        mobileThemeToggleBtn.addEventListener('click', toggleTheme);
+
+
+        // --- MOBILE MENU LOGIC ---
+        const mainNav = document.getElementById('main-nav');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+        let isMenuOpen = false;
+
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+                
+                mainNav.classList.remove('glass');
+                mainNav.classList.add('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                mobileMenu.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+                
+                mainNav.classList.add('glass');
+                mainNav.classList.remove('bg-white', 'dark:bg-gray-900');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // --- DESKTOP DROPDOWN LOGIC ---
+        const desktopBtn = document.getElementById('desktop-menu-btn');
+        const desktopDropdown = document.getElementById('desktop-dropdown');
+        
+        desktopBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            desktopDropdown.classList.toggle('hidden');
+            setTimeout(() => {
+                desktopDropdown.classList.toggle('opacity-0');
+                desktopDropdown.classList.toggle('scale-95');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!desktopDropdown.classList.contains('hidden') && !desktopBtn.contains(e.target) && !desktopDropdown.contains(e.target)) {
+                desktopDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    desktopDropdown.classList.add('hidden');
+                }, 200);
+            }
+        });
+    </script>
+</body>
+</html>
